@@ -33,6 +33,7 @@ contract AnyApiTask is ChainlinkClient {
         } else {
             setChainlinkToken(_link);
         }
+        setChainlinkOracle(_oracle);
         oracle = _oracle;
         jobId = _jobId;
         fee = _fee;
@@ -43,13 +44,26 @@ contract AnyApiTask is ChainlinkClient {
      * 通过 requestVolume 函数，给 Chainlink 发送获取外部数据请求
      */    
     function requestVolume() public returns (bytes32 requestId) {
-        Chainlink.Request memory request;
+        Chainlink.Request memory request = buildChainlinkRequest(
+            jobId,
+            address(this),
+            this.fulfill.selector
+        );
         //构建 Chainlink request
         /**
          * 在这里添加代码，在本地网络中可以使用非真实的 API 以及相关信息
          * 如果在测试网中，需要使用真实 url 和 path，
          * 可以参考此处代码：https://docs.chain.link/any-api/get-request/examples/single-word-response
          * **/
+        request.add(
+            "get",
+            "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=ETH&tsyms=USD"
+        );
+        request.add("path", "RAW,ETH,USD,VOLUME24HOUR"); // Chainlink nodes 1.0.0 and later support this format
+        int256 timesAmount = 10 ** 18;
+        request.addInt("times", timesAmount);
+        return sendChainlinkRequest(request, fee);
+
     }
 
     /*
@@ -63,6 +77,7 @@ contract AnyApiTask is ChainlinkClient {
          * 可以参考此处代码：https://docs.chain.link/any-api/get-request/examples/single-word-response
          * **/
         emit DataFulfilled(volume);
+        volume = _volume;
     }
 
     function withdrawLink() external {}

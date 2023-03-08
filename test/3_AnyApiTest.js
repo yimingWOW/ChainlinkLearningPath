@@ -38,7 +38,7 @@ describe("单元测试：Chainlink AnyAPI", async function() {
         const mockOracle = await mockOracleFactory.deploy(linkToken.address);
 
         const jobId = ethers.utils.toUtf8Bytes("29fa9aa13bf1468788b7cc4a500a45b8");
-        const fee = "100000000000000000";
+        const fee = "1000000000000000000";
 
         const anyApiFactory = await ethers.getContractFactory("AnyApiTask");
         const anyApi = await anyApiFactory.deploy(

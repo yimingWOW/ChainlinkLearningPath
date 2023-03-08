@@ -41,12 +41,32 @@ contract WeatherToken is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     function setUriToUpdate(uint256 temperature) public {
         uint256 timesAmount = 10 ** 18;
         // 在这里添加代码
+        if (temperature<=10){
+            uriToUpdate = METADATA_BELOW;
+        }
+        if ((10<temperature) && (temperature<20)){
+            uriToUpdate = METADATA_AVERAGE;
+        } 
+        if (temperature>=20){
+            uriToUpdate = METADATA_ABOVE;
+        }        
     }
 
     function updateTokenURI(uint256 tokenId) public {
         // 1. 比较 tokenId 现在的 uri 和 uriToUpdate
         // 2. 如果不相同，就更新 tokenId 的 uri
         // 在这里添加代码
+        string memory uri=tokenURI(tokenId);
+        bytes32 str1Hash = keccak256(abi.encode(uri));
+        bytes32 str2Hash = keccak256(abi.encode(uriToUpdate));
+        bytes32 str3Hash = keccak256(abi.encode(METADATA_UNKNOWN));
+        if( (str1Hash != str2Hash) ){
+            _setTokenURI(tokenId, uriToUpdate);
+        }
+        if( (str1Hash!=str3Hash) ){
+            _setTokenURI(tokenId, uriToUpdate);
+        }
+
     }
 
     function safeMint() public onlyOwner {

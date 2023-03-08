@@ -31,16 +31,16 @@ contract DataFeedTask {
      * 查看 aggregator 的地址 https://docs.chain.link/docs/ethereum-addresses/#Goerli%20Testnet，获得 Aggregator 合约地址
      * 本地环境中相关参数已经在测试脚本中配置
      *  */
-    constructor(
+    constructor(        
         address _linkPriceFeed,
         address _btcPriceFeed,
-        address _ethPriceFeed) {
+        address _ethPriceFeed
+        ) {
         owner = msg.sender;
         
-        //修改以下 solidity 代码
-        linkPriceFeed = AggregatorV3Interface(address(0));
-        btcPriceFeed = AggregatorV3Interface(address(0));
-        ethPriceFeed = AggregatorV3Interface(address(0));
+        linkPriceFeed = AggregatorV3Interface(_linkPriceFeed);
+        btcPriceFeed = AggregatorV3Interface(_btcPriceFeed);
+        ethPriceFeed = AggregatorV3Interface(_ethPriceFeed);
     }
 
     /**
@@ -48,8 +48,14 @@ contract DataFeedTask {
      * 获得 link/usd 的价格数据
      */
     function getLinkLatestPrice() public view returns (int256) {
-        //在此添加并且修改 solidity 代码
-        return 0;
+        (
+            ,
+            int256 answer
+            ,
+            ,
+            ,
+        )=linkPriceFeed.latestRoundData();
+        return answer;
     }
 
     /**
@@ -57,8 +63,14 @@ contract DataFeedTask {
      * 获得 btc/usd 的价格数据
      */  
     function getBtcLatestPrice() public view returns (int256) {
-        //在此添加并且修改 solidity 代码
-        return 0;
+         (
+            ,
+            int256 answer
+            ,
+            ,
+            ,
+        )=btcPriceFeed.latestRoundData();
+        return answer;
     }
 
     /**
@@ -66,8 +78,14 @@ contract DataFeedTask {
      * 获得 eth/usd 的价格数据
      */
     function getEthLatestPrice() public view returns (int256) {
-        //在此添加并且修改 solidity 代码
-        return 0;
+         (
+            ,
+            int256 answer
+            ,
+            ,
+            ,
+        )=ethPriceFeed.latestRoundData();
+        return answer;
     }
 
     /**

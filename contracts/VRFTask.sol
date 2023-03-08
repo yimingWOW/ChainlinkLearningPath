@@ -34,9 +34,9 @@ contract VRFTask is VRFConsumerBaseV2 {
      */ 
     uint64 immutable s_subscriptionId;
     bytes32 immutable s_keyHash;
-    uint32 constant CALL_BACK_LIMIT = 100;
+    uint32 constant CALL_BACK_LIMIT = 100000000;
     uint16 constant REQUEST_CONFIRMATIONS = 1;
-    uint32 constant NUM_WORDS = 1;
+    uint32 constant NUM_WORDS = 5;
 
     uint256[] public s_randomWords;
     uint256 public s_requestId;
@@ -52,19 +52,20 @@ contract VRFTask is VRFConsumerBaseV2 {
 
     /**  
      * 步骤 2 - 在构造函数中，初始化相关变量
-     * COORDINATOR，s_subscriptionId 和 s_keyHash
-     * */
+     * COORDINATOR，s_subscriptionId:267
+     * s_keyHash:0x79d3d8832d904592c0bf9818b621522c988bb8b0c05cdc3b15aea1b6e8db0c15 
+     * vrfCoordinator: 0x2Ca8E0C643bDe4C2E08ab1fA0da3401AdAD7734D
+     * */ 
     constructor(
         uint64 _subscriptionId,
         address vrfCoordinator,
         bytes32 _keyHash
     ) VRFConsumerBaseV2(vrfCoordinator) {
         s_owner = msg.sender;
-        
         //修改以下 solidity 代码
-        COORDINATOR = VRFCoordinatorV2Interface(address(0));
-        s_subscriptionId = 0;
-        s_keyHash = "";
+        COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
+        s_subscriptionId = _subscriptionId;
+        s_keyHash = _keyHash;
     }
 
     /** 
@@ -72,19 +73,24 @@ contract VRFTask is VRFConsumerBaseV2 {
      * */ 
     function requestRandomWords() external onlyOwner {
         //在此添加并且修改 solidity 代码
+            s_requestId=COORDINATOR.requestRandomWords(
+            s_keyHash,
+            s_subscriptionId,
+            REQUEST_CONFIRMATIONS,
+            CALL_BACK_LIMIT,
+            NUM_WORDS
+        );
     }
 
     /**
-     * 步骤 4 - 接受随机数，完成逻辑获取 5 个 5 以内**不重复**的随机数
-     * 关于如何使得获取的随机数不重复，清参考以下代码
-     * https://gist.github.com/cleanunicorn/d27484a2488e0eecec8ce23a0ad4f20b
+     * 步骤 4 - 接受随机数
      *  */ 
     function fulfillRandomWords(uint256 requestId, uint256[] memory _randomWords)
         internal
         override
     {
-        //在此添加 solidity 代码
-        
-        emit ReturnedRandomness(s_randomWords);
+    //在此添加 solidity 代码
+    s_randomWords=_randomWords;
+    emit ReturnedRandomness(s_randomWords);
     }
 }

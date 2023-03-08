@@ -35,6 +35,9 @@ contract AutomationTask is AutomationCompatible {
         interval = _interval;
         
         //在此添加 solidity 代码
+        for(uint256 i = 0;i < SIZE;i++){
+            healthPoint[i] = MAXIMUM_HEALTH;
+        }
     }
 
     /*
@@ -43,6 +46,7 @@ contract AutomationTask is AutomationCompatible {
      */
     function fight(uint256 fighter) public {
         //在此添加 solidity 代码
+        healthPoint[0]-=fighter;
     }
 
     /* 
@@ -62,12 +66,27 @@ contract AutomationTask is AutomationCompatible {
         override 
         returns (
             bool upkeepNeeded,
-            bytes memory /*performData*/
+            bytes memory performData
         )
     {
         //在此添加和修改 solidity 代码
-        upkeepNeeded = true;
-        
+        uint256 counter = 0;
+        for(uint256 i = 0;i < SIZE;i++){
+            if (healthPoint[i] < MAXIMUM_HEALTH) {
+                counter++; 
+            }
+        }
+        uint256[] memory indexToUpdate = new uint256[](counter);
+        uint256 indexCounter = 0;
+        for(uint256 i = 0;i < SIZE;i++){
+            if ((healthPoint[i] < MAXIMUM_HEALTH) && (lastTimeStamp+interval>block.timestamp)) {
+                indexToUpdate[indexCounter] = i; 
+                indexCounter++; 
+                upkeepNeeded = true;
+            }
+        }
+        performData = abi.encode(indexToUpdate);
+        return (upkeepNeeded,performData);
     }
 
     /* 
@@ -78,11 +97,16 @@ contract AutomationTask is AutomationCompatible {
      * 可以通过 performData 使用 checkUpkeep 的运算结果，减少 gas 费用
      */
     function performUpkeep(
-        bytes memory /*performData*/
+        bytes memory performData
     ) 
         external 
         override 
     {
         //在此添加 solidity 代码
+        lastTimeStamp = block.timestamp;
+        uint256[] memory indexToUpdate = abi.decode(performData,(uint256[]));
+        for(uint256 i = 0;i < indexToUpdate.length;i++){
+            healthPoint[indexToUpdate[i]]=MAXIMUM_HEALTH;
+        }
     }
 }

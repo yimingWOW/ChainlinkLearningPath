@@ -4,9 +4,9 @@ const { loadFixture, time } = require("@nomicfoundation/hardhat-network-helpers"
 const { BigNumber } = require("ethers");
 
 const unknowUri = "ipfs://QmTH56C6s1PQcP3T4oNqXbeaY2gcSw9cYs5yCsozmzhobv";
+const belowUri = "ipfs://QmYjAtBPAo2qjtiYzUozFtcXCwgCLLLJeVgSphfB6t2yvz";
 const averageUri = "ipfs://QmU6gvcWXBknL8d2czoxyC5N5bnFzAFDwHS3hDsWVw8Ttd";
 const aboveUri = "ipfs://QmVm1ne2q3cHPvyJtEJKQ7SMbr8TFMGJK6SYYiqC9sYvRf";
-const belowUri = "ipfs://QmYjAtBPAo2qjtiYzUozFtcXCwgCLLLJeVgSphfB6t2yvz";
 
 describe("单元测试：NFT 基础", async function() {
     async function deployNftFixure() {
@@ -29,7 +29,7 @@ describe("单元测试：NFT 基础", async function() {
         const [deployer] = await ethers.getSigners()
         const { nft } = await loadFixture(deployNftFixure)
         await nft.connect(deployer).safeMint()
-        await nft.setUriToUpdate(ethers.utils.parseEther("9.0"))
+        await nft.setUriToUpdate(BigNumber.from("9"))
         const uriToUpdate = await nft.uriToUpdate()
         assert.equal(uriToUpdate, belowUri)
     })
@@ -38,7 +38,7 @@ describe("单元测试：NFT 基础", async function() {
         const [deployer] = await ethers.getSigners()
         const { nft } = await loadFixture(deployNftFixure)
         await nft.connect(deployer).safeMint()
-        await nft.setUriToUpdate(ethers.utils.parseEther("15.0"))
+        await nft.setUriToUpdate(BigNumber.from("15"))
         const uriToUpdate = await nft.uriToUpdate()
         assert.equal(uriToUpdate, averageUri)
     })
@@ -56,7 +56,8 @@ describe("单元测试：NFT 基础", async function() {
         const [deployer] = await ethers.getSigners()
         const { nft } = await loadFixture(deployNftFixure);
         await nft.connect(deployer).safeMint();
-        await nft.connect(deployer).setUriToUpdate(15000000000000000000n)
+        await nft.setUriToUpdate(BigNumber.from("15"))
+        const uriToUpdate = await nft.uriToUpdate()
         await nft.connect(deployer).updateTokenURI(0)
         const tokenUriTokenId0 = await nft.tokenURI(0)
         assert.equal(tokenUriTokenId0, averageUri)
