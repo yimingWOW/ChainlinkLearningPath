@@ -137,3 +137,12 @@ Chainlink 中国开发者社区会持续性输出 Chainlink 最新信息，并�
 - [如何在 BNB 链上创建 BEP-20 通证](https://learnblockchain.cn/article/3917)
 - [如何在 Polygon 上创建 ERC-20 通证](https://learnblockchain.cn/article/4080)
 - [一文速览Chainlink 2.0白皮书](https://learnblockchain.cn/article/3106)
+
+
+yimning note:
+
+datafeedtask: https://goerli.etherscan.io/tx/0xde107d0a68a883640bbe09fe41d84a689cf93f305cf8b137ce4184434ea7f7fd
+vrftask: 0x831c6920D0E5A91D91633D1843AB26F3a467Ec79
+weathertoken: 0xfb36c21d39ca044Cad07762d554A9062CC5E9F45
+atomationtask: 0x8BC05bc0800b7030e559569360a088116AB5d821
+anyapitask: 0x0f02CF5424F520256E19Ba0645F8C6F75ff35088
