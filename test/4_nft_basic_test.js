@@ -57,7 +57,6 @@ describe("单元测试：NFT 基础", async function() {
         const { nft } = await loadFixture(deployNftFixure);
         await nft.connect(deployer).safeMint();
         await nft.setUriToUpdate(BigNumber.from("15"))
-        const uriToUpdate = await nft.uriToUpdate()
         await nft.connect(deployer).updateTokenURI(0)
         const tokenUriTokenId0 = await nft.tokenURI(0)
         assert.equal(tokenUriTokenId0, averageUri)
